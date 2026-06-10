@@ -204,7 +204,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
   </bpmn:category>
   <bpmn:message id="Message_1aes4cr" name="CaseUpdate">
     <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="=threadTs" />
+      <zeebe:subscription correlationKey="=slackRequest.threadTs" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
