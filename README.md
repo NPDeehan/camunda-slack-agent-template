@@ -1,5 +1,7 @@
 # Camunda Slack Agent — Starter Template
 
+![Process diagram](img/Screenshot%202026-06-10%20140656.png)
+
 This is a **ready-to-deploy starter template** for building a conversational AI agent on Camunda 8 with Slack as the primary communication channel. If you have never built a Camunda agent before and want a working starting point — this is it.
 
 The template ships with:
