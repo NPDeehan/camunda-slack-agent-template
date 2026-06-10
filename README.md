@@ -76,6 +76,7 @@ Inside the project, click **Upload files** and select `camunda-slack-agent-templ
 ---
 
 4. Open the file to confirm it loads correctly — you should see the process diagram with the Slack start event on the left and the agent sub-process in the centre.
+5. Update the process **name** and **ID** to something that reflects your use case. Click on an empty area of the canvas to select the process itself, then edit the **Name** and **ID** fields in the properties panel on the right. The ID is used as the process definition key in Operate and Tasklist, so choose something meaningful and unique to your project.
 
 > Do not deploy yet. You need to update the secret placeholders in the model first (Step 2), then collect your credentials (Steps 3 and 4), before deploying.
 
@@ -128,9 +129,7 @@ You will add secrets to Camunda as you go through this step. Here is how to get 
 | `app_mentions:read` | Yes | Allows Slack to deliver `@mention` events to Camunda so the process starts. |
 | `chat:write` | Yes | Allows the agent to post messages back into the Slack thread. |
 | `channels:history` | Yes | Allows the inbound connector to receive threaded replies in public channels. |
-| `groups:history` | Optional | Same as above for private channels. |
-| `im:history` | Optional | Same as above for direct messages. |
-| `mpim:history` | Optional | Same as above for multi-person DMs. |
+
 
 ### 3c. Install the app and add the Bot Token to Camunda
 
@@ -219,9 +218,7 @@ To find the exact URL:
 |-------|-----------|-----------------|
 | `app_mention` | Yes | Fires the process start event when a user `@mentions` the bot. |
 | `message.channels` | Yes | Delivers threaded replies to the intermediate catch event in public channels. |
-| `message.groups` | Optional | Same for private channels. |
-| `message.im` | Optional | Same for direct messages. |
-| `message.mpim` | Optional | Same for multi-person DMs. |
+
 
 6. Click **Save Changes** at the bottom.
 7. Slack will prompt you to **reinstall the app** to apply the new scopes — click the link and approve again.
@@ -235,8 +232,9 @@ To find the exact URL:
 1. Invite the bot into a channel if it is not there yet: type `/invite @your-app-name` in any channel.
 2. Mention the bot with a question:
    ```
-   @my-camunda-agent what can you help me with?
+   @my-camunda-agent In 30 seconds can you respond to me with the current time in Jakarta?
    ```
+   This message is a great first test because it exercises two built-in capabilities at once — the timer wait and the current time tool.
 3. You should see a process instance appear in Camunda **Operate** and a reply arrive in the Slack thread.
 4. Reply in the thread to ask a follow-up — the process is waiting for it.
 
