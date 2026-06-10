@@ -87,57 +87,17 @@ The BPMN uses `HAWK` as a placeholder in all Slack-related secret names (e.g. `S
 
 Choose your identifier now (e.g. `ALICE`, `MYTEAM`, `JOHN`) and use it consistently in every place below.
 
-### Where HAWK appears in the model
+The `HAWK` placeholder appears in the following locations — make sure you have updated all of them before moving on:
 
-The placeholder appears in **three elements**. Click each one in Web Modeler and update the secret name in the properties panel on the right.
+| Element | Field | Secret reference |
+|---------|-------|-----------------|
+| **"Show Answer in Slack"** service task (inside the agent sub-process) | Token | `{{secrets.SLACK_HAWK_OATH_TOKEN}}` |
+| **"Info From Slack"** start event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
+| **"Info From Slack"** start event | Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` → replace with a hardcoded UUID (see Step 3e) |
+| **"Wait for Reply in Thread"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
+| **"Wait for Reply in Thread"** intermediate catch event | Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` → replace with the same hardcoded UUID as above |
 
----
-
-#### "Show Answer in Slack" service task
-
-This is the outbound Slack connector inside the agent sub-process. Double-click the sub-process to open it, then click the **Show Answer in Slack** task.
-
-In the properties panel, under **Inputs**, find the `token` field. Its value will be:
-
-```
-{{secrets.SLACK_HAWK_OATH_TOKEN}}
-```
-
-Change `HAWK` to your identifier:
-
-```
-{{secrets.SLACK_[YOURNAME]_OATH_TOKEN}}
-```
-
----
-
-#### "Info From Slack" start event
-
-This is the Slack inbound webhook connector that starts the process. Click the **Info From Slack** start event on the canvas.
-
-In the properties panel find the **Webhook ID** field and the **Signing Secret** field. Update both:
-
-| Field | From | To |
-|-------|------|----|
-| Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` | A hardcoded UUID — see Step 3e |
-| Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` | `{{secrets.SLACK_[YOURNAME]_SIGINING_SECRET}}` |
-
----
-
-#### "Wait for Reply in Thread" intermediate catch event
-
-This is the inbound Slack connector that listens for threaded replies after the agent posts a message. Click the **Wait for Reply in Thread** intermediate catch event (inside the event-based gateway branch).
-
-> **Important:** This element must use the **exact same Webhook ID value** as the start event above. Both connectors share one webhook endpoint — if the IDs differ, threaded replies will not be delivered to the correct process instance.
-
-| Field | From | To |
-|-------|------|----|
-| Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` | The same hardcoded UUID you used above |
-| Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` | `{{secrets.SLACK_[YOURNAME]_SIGINING_SECRET}}` |
-
----
-
-> **Tip:** If you prefer to do this outside Web Modeler, download the BPMN, open it in any text editor, do a find-and-replace of `HAWK` with your identifier (all five occurrences will be updated at once), then re-upload the file to your Web Modeler project.
+> **Tip:** If you prefer to edit outside Web Modeler, download the BPMN, do a find-and-replace of `HAWK` in any text editor (all five occurrences will be updated at once), then re-upload to your project.
 
 ---
 
