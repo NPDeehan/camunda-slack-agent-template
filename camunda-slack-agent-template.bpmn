@@ -15,7 +15,7 @@
           <zeebe:input source="{{secrets.AWS_ACCESS_KEY}}" target="provider.bedrock.authentication.accessKey" />
           <zeebe:input source="{{secrets.AWS_SECRET_KEY}}" target="provider.bedrock.authentication.secretKey" />
           <zeebe:input source="us.anthropic.claude-sonnet-4-6" target="provider.bedrock.model.model" />
-          <zeebe:input source="=&#34;You are **TaskAgent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime.&#10;&#10;Your goal is to provide an answer to questoins about our tech stuff. Make sure to answer any followup questoins that might also be asked.&#10;&#10;Any communication to the user must go throught he tools provided. &#10;&#10;If tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don&#39;t guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you&#39;re not able to find a good answer, return with a message stating why you&#39;re not able to.&#10;&#10;Wrap minimal, inspectable reasoning in *exactly* this XML template:&#10;&#10;&#60;thinking&#62;&#10;&#60;context&#62;…briefly state the customer’s need and current state…&#60;/context&#62;&#10;&#60;reflection&#62;…list candidate tools, justify which you will call next and why…&#60;/reflection&#62;&#10;&#60;/thinking&#62;&#10;&#10;Reveal **no** additional private reasoning outside these tags.&#34;" target="data.systemPrompt.prompt" />
+          <zeebe:input source="=&#34;You are a **Camunda Task Agent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime. &#10;The only communcation method you have with the end user is through slack and tools are provided to facilitate that converstation. Be aware that the user only has access to what you post in slack and cannot see your output otherwise.&#10;&#10;Your goal is to provide an answer to questoins about our camunda stuff or anthing the end sure might need. Make sure to answer any followup questoins that might also be asked.&#10;&#10;Any communication to the user must go throught he tools provided. &#10;&#10;If tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don&#39;t guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you&#39;re not able to find a good answer, return with a message stating why you&#39;re not able to.&#10;&#10;Wrap minimal, inspectable reasoning in *exactly* this XML template:&#10;&#10;&#60;thinking&#62;&#10;&#60;context&#62;…briefly state the customer’s need and current state…&#60;/context&#62;&#10;&#60;reflection&#62;…list candidate tools, justify which you will call next and why…&#60;/reflection&#62;&#10;&#60;/thinking&#62;&#10;&#10;Reveal **no** additional private reasoning outside these tags.&#34;" target="data.systemPrompt.prompt" />
           <zeebe:input source="=string(question)" target="data.userPrompt.prompt" />
           <zeebe:input source="=agent.context" target="agentContext" />
           <zeebe:input source="in-process" target="data.memory.storage.type" />
@@ -149,11 +149,13 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         </bpmn:extensionElements>
         <bpmn:outgoing>Flow_0dv1xfi</bpmn:outgoing>
       </bpmn:scriptTask>
+      <bpmn:sequenceFlow id="Flow_0dv1xfi" sourceRef="Activity_0dcm91w" targetRef="Gateway_1g2q0zh" />
       <bpmn:eventBasedGateway id="Gateway_1g2q0zh">
         <bpmn:incoming>Flow_0dv1xfi</bpmn:incoming>
         <bpmn:outgoing>Flow_0qfo9kt</bpmn:outgoing>
         <bpmn:outgoing>Flow_0y1tq3b</bpmn:outgoing>
       </bpmn:eventBasedGateway>
+      <bpmn:sequenceFlow id="Flow_0qfo9kt" sourceRef="Gateway_1g2q0zh" targetRef="Event_0m8dzxr" />
       <bpmn:intermediateCatchEvent id="Event_1v7iep8" name="Case Update">
         <bpmn:extensionElements>
           <zeebe:ioMapping>
@@ -163,8 +165,6 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         <bpmn:incoming>Flow_0y1tq3b</bpmn:incoming>
         <bpmn:messageEventDefinition id="MessageEventDefinition_18d8q6a" messageRef="Message_1aes4cr" />
       </bpmn:intermediateCatchEvent>
-      <bpmn:sequenceFlow id="Flow_0qfo9kt" sourceRef="Gateway_1g2q0zh" targetRef="Event_0m8dzxr" />
-      <bpmn:sequenceFlow id="Flow_0dv1xfi" sourceRef="Activity_0dcm91w" targetRef="Gateway_1g2q0zh" />
       <bpmn:sequenceFlow id="Flow_0y1tq3b" sourceRef="Gateway_1g2q0zh" targetRef="Event_1v7iep8" />
     </bpmn:adHocSubProcess>
     <bpmn:startEvent id="Event_0kr9ms2" name="Info From Slack" zeebe:modelerTemplate="io.camunda.connectors.inbound.Slack.MessageStartEvent.v1" zeebe:modelerTemplateVersion="7" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo=">
@@ -204,17 +204,11 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
   </bpmn:category>
   <bpmn:message id="Message_1aes4cr" name="CaseUpdate">
     <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="=applicationId" />
+      <zeebe:subscription correlationKey="=threadTs" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Camunda-Slack-Agent-Template">
-      <bpmndi:BPMNShape id="Event_0k4070y_di" bpmnElement="Event_0kr9ms2">
-        <dc:Bounds x="182" y="160" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="164" y="203" width="78" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_14an6hl_di" bpmnElement="Event_14an6hl">
         <dc:Bounds x="1282" y="160" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -291,14 +285,12 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         <di:waypoint x="900" y="290" />
         <di:waypoint x="952" y="290" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jt0w1f_di" bpmnElement="Flow_0jt0w1f">
-        <di:waypoint x="1150" y="178" />
-        <di:waypoint x="1282" y="178" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1890yp5_di" bpmnElement="Flow_1890yp5">
-        <di:waypoint x="218" y="178" />
-        <di:waypoint x="350" y="178" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0k4070y_di" bpmnElement="Event_0kr9ms2">
+        <dc:Bounds x="182" y="160" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="164" y="203" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Group_0sybyb7_di" bpmnElement="Group_0sybyb7">
         <dc:Bounds x="385" y="110" width="755" height="260" />
         <bpmndi:BPMNLabel>
@@ -311,6 +303,14 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           <dc:Bounds x="718" y="397" width="65" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0jt0w1f_di" bpmnElement="Flow_0jt0w1f">
+        <di:waypoint x="1150" y="178" />
+        <di:waypoint x="1282" y="178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1890yp5_di" bpmnElement="Flow_1890yp5">
+        <di:waypoint x="218" y="178" />
+        <di:waypoint x="350" y="178" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
