@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Niall
+Copyright (c) 2026 Niall Deehan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+This Blueprint is designed by Camunda's partners or independent third-party developers. To receive
+assistance or support for the Blueprint "Camunda Slack Agent — Starter Template", contact Niall Deehan
+directly at niall.deehan@camunda.com. Camunda disclaims any support obligation for the Blueprint.
+
+By installing this blueprint, you consent to Camunda sharing your contact information with the
+developer of this blueprint so that you can receive more information about it directly from the
+developer.
