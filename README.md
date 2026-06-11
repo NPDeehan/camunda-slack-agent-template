@@ -54,7 +54,7 @@ Before starting you will need:
 - A **Camunda 8 SaaS** account with a cluster on **version 8.9 or later**.
   Sign up at [camunda.com](https://camunda.com) if you do not have one.
 - An **AWS account** with Amazon Bedrock enabled and access to the model `us.anthropic.claude-sonnet-4-6` in your chosen region.
-  *(May not be needed if you are using a Camunda-provided development cluster — see Step 4.)*
+  *(May not be needed if you are using a Camunda-provided development cluster — see Step 5.)*
 - A **Slack workspace** where you can install a custom app.
 
 ---
@@ -71,11 +71,43 @@ Inside the project, click **Add file** → **Browse marketplace**. Search for **
 
 
 ---
-> Do not deploy yet. You need to update the secret placeholders in the model first (Step 2), then collect your credentials (Steps 3 and 4), before deploying.
+> Do not deploy yet. Complete Steps 2 through 5 first — configure the model, update the secret placeholders, and collect your credentials — before deploying.
 
 ---
 
-## Step 2 — Update the secret placeholders in the model
+## Step 2 — Configure the model
+
+Once the BPMN is loaded, make these three changes in Web Modeler before doing anything else. They must be unique to your deployment, especially if you are sharing a cluster with others.
+
+### 2a. Set a unique Process Name and ID
+
+1. Click on an empty area in the canvas (not on any element) to select the process itself.
+2. In the properties panel, update **Name** to something descriptive and unique, e.g. `Alice Slack Agent`.
+3. Update **ID** to a unique identifier using only letters, numbers, and hyphens, e.g. `alice-slack-agent`.
+
+If two people deploy this template to the same cluster with the default ID `Camunda-Slack-Agent-Template`, their deployments will overwrite each other.
+
+### 2b. Set Message Names
+
+The **"Info From Slack"** start event and the **"Wait for Reply in Thread"** intermediate catch event both require a unique message name. Camunda uses this name internally to route inbound Slack events to the correct process.
+
+1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and generate two UUIDs — one for each event. They must be **different**.
+2. Click the **"Info From Slack"** start event and paste the first UUID into its **Message Name** field.
+3. Click the **"Wait for Reply in Thread"** intermediate catch event and paste the second UUID into its **Message Name** field.
+
+### 2c. Set Webhook IDs
+
+The Webhook ID becomes the last segment of the Camunda inbound webhook URL that Slack will send events to. It must be unique to your deployment.
+
+1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and copy a UUID.
+2. Click the **"Info From Slack"** start event and paste the UUID into its **Webhook ID** field.
+3. Click the **"Wait for Reply in Thread"** intermediate catch event and paste the **same UUID** into its **Webhook ID** field.
+
+Both events must share the **identical** Webhook ID — this is what tells Camunda to route Slack replies to the correct process instance.
+
+---
+
+## Step 3 — Update the secret placeholders in the model
 
 The BPMN uses `HAWK` as a placeholder in all Slack-related secret names (e.g. `SLACK_HAWK_OATH_TOKEN`). You need to replace `HAWK` with your own identifier — your name, your team name, or any short label — before you deploy. This matters on shared clusters where multiple people may deploy this template, because secret names must be unique per cluster.
 
@@ -87,15 +119,13 @@ The `HAWK` placeholder appears in the following locations — make sure you have
 |---------|-------|-----------------|
 | **"Show Answer in Slack"** service task (inside the agent sub-process) | Token | `{{secrets.SLACK_HAWK_OATH_TOKEN}}` |
 | **"Info From Slack"** start event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
-| **"Info From Slack"** start event | Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` → replace with a hardcoded UUID (see Step 3e) |
-| **"Response"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
-| **"Response"** intermediate catch event | Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` → replace with the same hardcoded UUID as above |
+| **"Wait for Reply in Thread"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
 
-> **Tip:** If you prefer to edit outside Web Modeler, download the BPMN, do a find-and-replace of `HAWK` in any text editor (all five occurrences will be updated at once), then re-upload to your project.
+> **Tip:** If you prefer to edit outside Web Modeler, download the BPMN, do a find-and-replace of `HAWK` in any text editor (all occurrences will be updated at once), then re-upload to your project.
 
 ---
 
-## Step 3 — Create and configure your Slack app
+## Step 4 — Create and configure your Slack app
 
 You need a Slack app installed into your workspace. The app acts as the bot that users mention and that posts replies on behalf of the agent.
 
@@ -103,7 +133,7 @@ In the coming steps you'll be asked to create secrets - No need to do it now, bu
 
 > **How to add a secret:** Log in to [Camunda Console](https://console.camunda.io) → click your cluster name → click the **Secrets** tab → click **Create new secret** → enter the name and value → click **Create**.
 
-### 3a. Create the app
+### 4a. Create the app
 
 1. Go to [api.slack.com/apps](https://api.slack.com/apps) and sign in with your Slack account.
 2. Click **Create New App**.
@@ -111,20 +141,7 @@ In the coming steps you'll be asked to create secrets - No need to do it now, bu
 4. Enter an app name (e.g. *My Camunda Agent*) and select the workspace to install it into.
 5. Click **Create App**.
 
-### 3a-ii. Copy your App ID and update the activation condition
-
-1. After creating the app you will land on the **Basic Information** page. Under **App Credentials**, copy the **App ID** (it starts with `A`, e.g. `A0123ABCDEF`).
-2. Open `camunda-slack-agent-template.bpmn` in Web Modeler and click the **"Info From Slack"** start event.
-3. In the properties panel find the **Activation Condition** field. It contains the placeholder `"??????"`. Replace it with your App ID so the line reads:
-   ```
-   request.body.api_app_id = "A0123ABCDEF"
-   ```
-
-This condition ensures the process only starts for events from *your* Slack app and ignores events from any other apps that may share the same webhook endpoint.
-
----
-
-### 3b. Add Bot Token Scopes
+### 4b. Add Bot Token Scopes
 
 1. In the left sidebar click **OAuth & Permissions**.
 2. Scroll down to **Scopes → Bot Token Scopes**.
@@ -137,7 +154,7 @@ This condition ensures the process only starts for events from *your* Slack app 
 | `channels:history` | Yes | Allows the inbound connector to receive threaded replies in public channels. |
 
 
-### 3c. Install the app and add the Bot Token to Camunda
+### 4c. Install the app and add the Bot Token to Camunda
 
 1. Scroll back to the top of the **OAuth & Permissions** page.
 2. Click **Install to Workspace** and approve the permissions.
@@ -147,7 +164,7 @@ This condition ensures the process only starts for events from *your* Slack app 
 > - **Name:** `SLACK_[YOURNAME]_OATH_TOKEN`
 > - **Value:** the `xoxb-…` token you just copied
 
-### 3d. Copy the Signing Secret and add it to Camunda
+### 4d. Copy the Signing Secret and add it to Camunda
 
 1. In the left sidebar click **Basic Information**.
 2. Scroll to **App Credentials**.
@@ -157,18 +174,9 @@ This condition ensures the process only starts for events from *your* Slack app 
 > - **Name:** `SLACK_[YOURNAME]_SIGINING_SECRET`
 > - **Value:** the Signing Secret you just copied
 
-### 3e. Generate a Webhook ID and hardcode it in the model
-
-The Webhook ID becomes the last segment of the Camunda webhook URL that Slack will send events to. Rather than storing this as a secret, paste the value directly into the model.
-
-1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and copy the generated UUID.
-2. Go back to Web Modeler and paste the UUID as a hardcoded value into the **Webhook ID** field on **both** elements — the **"Info From Slack" start event** and the **"Wait for Reply in Thread" intermediate catch event**. Both must have the identical UUID or Slack replies will not be routed correctly.
-
-> **Note:** Event Subscriptions (pointing Slack at the webhook URL) comes in Step 6, after you have deployed and the URL is available.
-
 ---
 
-## Step 4 — Configure AWS credentials *(skip if on a Camunda dev cluster)*
+## Step 5 — Configure AWS credentials *(skip if on a Camunda dev cluster)*
 
 > **Using a Camunda-provided development cluster?** Dev clusters often come with Bedrock model access pre-configured at the cluster level. Try deploying and running the agent first — if it fails to invoke the model, come back here and add the AWS secrets manually.
 
@@ -183,7 +191,7 @@ Once you have your credentials:
 
 ---
 
-## Step 5 — Deploy the BPMN
+## Step 6 — Deploy the BPMN
 
 
 Now that the secret placeholders are updated and all secrets exist in the cluster, you are ready to deploy.
@@ -194,17 +202,19 @@ Now that the secret placeholders are updated and all secrets exist in the cluste
 
 ---
 
-## Step 6 — Connect Slack Event Subscriptions
+## Step 7 — Connect Slack Event Subscriptions
 
 Now that the process is deployed, Camunda has created the inbound webhook endpoint. You need to give Slack this URL so it knows where to send events.
 
-### 6a. Find the webhook URL
+### 7a. Find the webhook URL
 
 The URL has the format:
 
 ```
-https://<region>-<cluster-id>.connectors.camunda.io/inbound/<your-SLACK_[YOURNAME]_WEBHOOK_ID>
+https://<region>-<cluster-id>.connectors.camunda.io/inbound/<your-webhook-UUID>
 ```
+
+where `<your-webhook-UUID>` is the UUID you set in Step 2c.
 
 To find the exact URL:
 
@@ -212,7 +222,7 @@ To find the exact URL:
 2. Click the **Info From Slack** start event.
 3. In the properties panel, open the **Webhook** tab — the full URL is shown there. Copy it.
 
-### 6b. Enable Event Subscriptions in Slack
+### 7b. Enable Event Subscriptions in Slack
 
 1. Return to your app at [api.slack.com/apps](https://api.slack.com/apps).
 2. In the left sidebar click **Event Subscriptions**.
@@ -232,7 +242,7 @@ To find the exact URL:
 
 ---
 
-## Step 7 — Test it
+## Step 8 — Test it
 
 ### Slack
 

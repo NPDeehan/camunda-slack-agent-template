@@ -81,14 +81,14 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         </bpmn:extensionElements>
         <bpmn:outgoing>Flow_1xv0jz4</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:intermediateCatchEvent id="Event_0vckndl" name="Response" zeebe:modelerTemplate="io.camunda.connectors.inbound.Slack.IntermediateCatchEvent.v1" zeebe:modelerTemplateVersion="8" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo=">
+      <bpmn:intermediateCatchEvent id="Event_0vckndl" name="Wait for Reply in Thread" zeebe:modelerTemplate="io.camunda.connectors.inbound.Slack.IntermediateCatchEvent.v1" zeebe:modelerTemplateVersion="8" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo=">
         <bpmn:extensionElements>
           <zeebe:properties>
             <zeebe:property name="inbound.type" value="io.camunda:slack-webhook:1" />
             <zeebe:property name="inbound.context" value="{{secrets.SLACK_HAWK_WEBHOOK_ID}}" />
             <zeebe:property name="inbound.slackSigningSecret" value="{{secrets.SLACK_HAWK_SIGINING_SECRET}}" />
             <zeebe:property name="inbound.verificationExpression" value="=if (body.type != null and body.type = &#34;url_verification&#34;) then {body:{&#34;challenge&#34;:body.challenge}, statusCode: 200} else null" />
-            <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;message&#34;&#10; and request.body.event.thread_ts != null&#10; and request.body.event.client_msg_id != null&#10; and request.body.event.bot_id = null&#10;and request.body.event.thread_ts = slackRequest.threadTs" />
+            <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;message&#34;&#10; and request.body.event.thread_ts != null&#10; and request.body.event.client_msg_id != null&#10; and request.body.event.bot_id = null" />
             <zeebe:property name="consumeUnmatchedEvents" value="false" />
             <zeebe:property name="correlationKeyExpression" value="=string(request.body.event.thread_ts)" />
             <zeebe:property name="deduplicationModeManualFlag" value="false" />
@@ -177,8 +177,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           <zeebe:property name="inbound.verificationExpression" value="=if (body.type != null and body.type = &#34;url_verification&#34;) then {body:{&#34;challenge&#34;:body.challenge}, statusCode: 200} else null" />
           <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;app_mention&#34;&#10;and not(is defined(request.headers.x-slack-retry-num))&#10;" />
           <zeebe:property name="consumeUnmatchedEvents" value="false" />
-          <zeebe:property name="correlationRequired" value="required" />
-          <zeebe:property name="correlationKeyExpression" value="=request.body.api_app_id = &#34;YOUR_APP_ID&#34;" />
+          <zeebe:property name="correlationRequired" value="notRequired" />
           <zeebe:property name="deduplicationModeManualFlag" value="false" />
           <zeebe:property name="deduplicationMode" value="AUTO" />
           <zeebe:property name="resultVariable" value="question" />
@@ -229,7 +228,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
       <bpmndi:BPMNShape id="Event_0b7ceab_di" bpmnElement="Event_0vckndl">
         <dc:Bounds x="622" y="162" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="615" y="205" width="51" height="14" />
+          <dc:Bounds x="601" y="205" width="80" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_14jk22y_di" bpmnElement="Gateway_000w0oi">
