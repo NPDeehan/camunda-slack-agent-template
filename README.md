@@ -111,6 +111,19 @@ In the coming steps you'll be asked to create secrets - No need to do it now, bu
 4. Enter an app name (e.g. *My Camunda Agent*) and select the workspace to install it into.
 5. Click **Create App**.
 
+### 3a-ii. Copy your App ID and update the activation condition
+
+1. After creating the app you will land on the **Basic Information** page. Under **App Credentials**, copy the **App ID** (it starts with `A`, e.g. `A0123ABCDEF`).
+2. Open `camunda-slack-agent-template.bpmn` in Web Modeler and click the **"Info From Slack"** start event.
+3. In the properties panel find the **Activation Condition** field. It contains the placeholder `"??????"`. Replace it with your App ID so the line reads:
+   ```
+   request.body.api_app_id = "A0123ABCDEF"
+   ```
+
+This condition ensures the process only starts for events from *your* Slack app and ignores events from any other apps that may share the same webhook endpoint.
+
+---
+
 ### 3b. Add Bot Token Scopes
 
 1. In the left sidebar click **OAuth & Permissions**.
@@ -171,6 +184,7 @@ Once you have your credentials:
 ---
 
 ## Step 5 — Deploy the BPMN
+
 
 Now that the secret placeholders are updated and all secrets exist in the cluster, you are ready to deploy.
 
