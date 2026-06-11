@@ -65,19 +65,12 @@ Before starting you will need:
 2. Click **Create new project** and give it a name.
 3. Add the BPMN using either of the two options below.
 
-**Option A — Camunda Marketplace (recommended)**
+**Camunda Marketplace**
 
 Inside the project, click **Add file** → **Browse marketplace**. Search for **Camunda Slack Agent Starter** and select it. The BPMN will be added to your project automatically.
 
-**Option B — Upload from this repository**
-
-Inside the project, click **Upload files** and select `camunda-slack-agent-template.bpmn` from this repository.
 
 ---
-
-4. Open the file to confirm it loads correctly — you should see the process diagram with the Slack start event on the left and the agent sub-process in the centre.
-5. Update the process **name** and **ID** to something that reflects your use case. Click on an empty area of the canvas to select the process itself, then edit the **Name** and **ID** fields in the properties panel on the right. The ID is used as the process definition key in Operate and Tasklist, so choose something meaningful and unique to your project.
-
 > Do not deploy yet. You need to update the secret placeholders in the model first (Step 2), then collect your credentials (Steps 3 and 4), before deploying.
 
 ---
@@ -95,8 +88,8 @@ The `HAWK` placeholder appears in the following locations — make sure you have
 | **"Show Answer in Slack"** service task (inside the agent sub-process) | Token | `{{secrets.SLACK_HAWK_OATH_TOKEN}}` |
 | **"Info From Slack"** start event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
 | **"Info From Slack"** start event | Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` → replace with a hardcoded UUID (see Step 3e) |
-| **"Wait for Reply in Thread"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
-| **"Wait for Reply in Thread"** intermediate catch event | Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` → replace with the same hardcoded UUID as above |
+| **"Response"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
+| **"Response"** intermediate catch event | Webhook ID | `{{secrets.SLACK_HAWK_WEBHOOK_ID}}` → replace with the same hardcoded UUID as above |
 
 > **Tip:** If you prefer to edit outside Web Modeler, download the BPMN, do a find-and-replace of `HAWK` in any text editor (all five occurrences will be updated at once), then re-upload to your project.
 
@@ -106,7 +99,7 @@ The `HAWK` placeholder appears in the following locations — make sure you have
 
 You need a Slack app installed into your workspace. The app acts as the bot that users mention and that posts replies on behalf of the agent.
 
-You will add secrets to Camunda as you go through this step. Here is how to get to the Secrets page — you will need it several times:
+In the coming steps you'll be asked to create secrets - No need to do it now, but you will be told to add secrets to Camunda as you go through these steps. Here is how to get to the Secrets page — you will need it several times:
 
 > **How to add a secret:** Log in to [Camunda Console](https://console.camunda.io) → click your cluster name → click the **Secrets** tab → click **Create new secret** → enter the name and value → click **Create**.
 
