@@ -52,7 +52,7 @@ The same process can also be started from **Camunda Tasklist** by submitting a f
 Before starting you will need:
 
 - A **Camunda 8 SaaS** account with a cluster on **version 8.9 or later**.
-  Sign up at [camunda.com](https://camunda.com) if you do not have one.
+  Sign up at [camunda.com](https://camunda.com) if you do not have one. (If you're a Camundi, you don't need to do this, we already have a cluster for you and you can just ask to be invited.)
 - An **AWS account** with Amazon Bedrock enabled and access to the model `us.anthropic.claude-sonnet-4-6` in your chosen region.
   *(May not be needed if you are using a Camunda-provided development cluster — see Step 7.)*
 - A **Slack workspace** where you can install a custom app.
