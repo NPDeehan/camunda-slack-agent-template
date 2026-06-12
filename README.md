@@ -63,7 +63,7 @@ Before starting you will need:
 
 1. Log in to [Camunda Web Modeler](https://modeler.camunda.io).
 2. Click **Create new project** and give it a name.
-3. Inside the project, click **Add file** → **Browse marketplace**. Search for **Camunda Slack Agent Starter** and select it. The BPMN will be added to your project automatically.
+3. Inside the project, click **Add file** → **Browse blueprints**. Search for **Camunda Slack Agent Starter** and select it. The BPMN will be added to your project automatically.
 
 ---
 
@@ -73,8 +73,8 @@ Once the BPMN is loaded, make these three changes in Web Modeler before doing an
 
 ### 2a. Set a unique Process Name and ID
 
-1. Click on an empty area in the canvas (not on any element) to select the process itself.
-2. In the properties panel, update **Name** to something descriptive and unique, e.g. `Alice Slack Agent`.
+1. Click on an empty area in the canvas (not on any element) to select the process itself. Make sure you're on the implement tab at the top, not the design tab
+2. In the properties panel (named 'Details'), update **Name** to something descriptive and unique, e.g. `Alice Slack Agent`.
 3. Update **ID** to a unique identifier using only letters, numbers, and hyphens, e.g. `alice-slack-agent`.
 
 If two people deploy this template to the same cluster with the default ID `Camunda-Slack-Agent-Template`, their deployments will overwrite each other.
