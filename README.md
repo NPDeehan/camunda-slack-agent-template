@@ -136,7 +136,8 @@ Deploy now — before creating the Slack app — so that Camunda generates the i
 
 ### Find and copy the webhook URL
 
-Once deployed, retrieve the webhook URL that Slack will use to send events to Camunda.
+Once deployed, retrieve the webhook URL that Slack will use to send events to Camunda. 
+Note that Camundi using the helper agent can just ask for the WebhookURL to be generated for them.
 
 1. Click the **"Info From Slack"** start event.
 2. In the properties panel, open the **Webhook** tab.
@@ -229,7 +230,7 @@ The manifest is reproduced below. Replace the two placeholders before moving on:
 
 ---
 
-## Step 7 — Configure AWS credentials *(skip if on a Camunda dev cluster)*
+## Step 7 — Configure AWS credentials *(skip if on a Camundi have alrady been given access to the demo cluster)*
 
 > **Using a Camunda-provided development cluster?** Dev clusters often come with Bedrock model access pre-configured at the cluster level. Try running the agent first — if it fails to invoke the model, come back here and add the AWS secrets manually.
 
