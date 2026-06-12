@@ -255,12 +255,6 @@ If you are using your own cluster or the agent cannot reach Bedrock, you need an
 3. You should see a process instance appear in Camunda **Operate** and a reply arrive in the Slack thread.
 4. Reply in the thread to ask a follow-up — the process is waiting for it.
 
-### Tasklist (no Slack required)
-
-1. Open [Camunda Tasklist](https://tasklist.camunda.io) and click **Start process**.
-2. Find the `Get Question About tech Stuff` start event and submit a question.
-3. The agent will create a user task with the answer — open it to read the reply and optionally submit a follow-up.
-
 ---
 
 ## Built-in BPMN capabilities
