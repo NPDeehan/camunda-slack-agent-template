@@ -54,7 +54,7 @@ Before starting you will need:
 - A **Camunda 8 SaaS** account with a cluster on **version 8.9 or later**.
   Sign up at [camunda.com](https://camunda.com) if you do not have one.
 - An **AWS account** with Amazon Bedrock enabled and access to the model `us.anthropic.claude-sonnet-4-6` in your chosen region.
-  *(May not be needed if you are using a Camunda-provided development cluster — see Step 5.)*
+  *(May not be needed if you are using a Camunda-provided development cluster — see Step 7.)*
 - A **Slack workspace** where you can install a custom app.
 
 ---
@@ -63,15 +63,7 @@ Before starting you will need:
 
 1. Log in to [Camunda Web Modeler](https://modeler.camunda.io).
 2. Click **Create new project** and give it a name.
-3. Add the BPMN using either of the two options below.
-
-**Camunda Marketplace**
-
-Inside the project, click **Add file** → **Browse marketplace**. Search for **Camunda Slack Agent Starter** and select it. The BPMN will be added to your project automatically.
-
-
----
-> Do not deploy yet. Complete Steps 2 through 5 first — configure the model, update the secret placeholders, and collect your credentials — before deploying.
+3. Inside the project, click **Add file** → **Browse marketplace**. Search for **Camunda Slack Agent Starter** and select it. The BPMN will be added to your project automatically.
 
 ---
 
@@ -89,156 +81,164 @@ If two people deploy this template to the same cluster with the default ID `Camu
 
 ### 2b. Set Message Names
 
-The **"Info From Slack"** start event and the **"Wait for Reply in Thread"** intermediate catch event both require a unique message name. Camunda uses this name internally to route inbound Slack events to the correct process.
+The **"Info From Slack"** start event and the **"Wait for Reply in Thread"** intermediate catch event each need their own unique message name. The two names must be **different** from each other.
 
-1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and generate two UUIDs — one for each event. They must be **different**.
+1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and generate two UUIDs.
 2. Click the **"Info From Slack"** start event and paste the first UUID into its **Message Name** field.
 3. Click the **"Wait for Reply in Thread"** intermediate catch event and paste the second UUID into its **Message Name** field.
 
 ### 2c. Set Webhook IDs
 
-The Webhook ID becomes the last segment of the Camunda inbound webhook URL that Slack will send events to. It must be unique to your deployment.
+The Webhook ID becomes the last segment of the Camunda inbound webhook URL that Slack will send events to. Both events must share the **same** Webhook ID — this is what allows Slack replies to be routed to the correct process instance.
 
 1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and copy a UUID.
 2. Click the **"Info From Slack"** start event and paste the UUID into its **Webhook ID** field.
 3. Click the **"Wait for Reply in Thread"** intermediate catch event and paste the **same UUID** into its **Webhook ID** field.
 
-Both events must share the **identical** Webhook ID — this is what tells Camunda to route Slack replies to the correct process instance.
-
 ---
 
 ## Step 3 — Update the secret placeholders in the model
 
-The BPMN uses `HAWK` as a placeholder in all Slack-related secret names (e.g. `SLACK_HAWK_OATH_TOKEN`). You need to replace `HAWK` with your own identifier — your name, your team name, or any short label — before you deploy. This matters on shared clusters where multiple people may deploy this template, because secret names must be unique per cluster.
+The BPMN uses `HAWK` as a placeholder in all Slack-related secret names (e.g. `SLACK_HAWK_OATH_TOKEN`). Replace `HAWK` with your own identifier — your name, your team name, or any short label. This matters on shared clusters where multiple people may deploy this template, because secret names must be unique per cluster.
 
 Choose your identifier now (e.g. `ALICE`, `MYTEAM`, `JOHN`) and use it consistently in every place below.
-
-The `HAWK` placeholder appears in the following locations — make sure you have updated all of them before moving on:
 
 | Element | Field | Secret reference |
 |---------|-------|-----------------|
 | **"Show Answer in Slack"** service task (inside the agent sub-process) | Token | `{{secrets.SLACK_HAWK_OATH_TOKEN}}` |
 | **"Info From Slack"** start event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
-| **"Wait for Reply in Thread"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
+| **"Response"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
 
-> **Tip:** If you prefer to edit outside Web Modeler, download the BPMN, do a find-and-replace of `HAWK` in any text editor (all occurrences will be updated at once), then re-upload to your project.
+> **Tip:** Download the BPMN, do a find-and-replace of `HAWK` in any text editor, then re-upload to your project. All occurrences will be updated at once.
 
 ---
 
-## Step 4 — Create and configure your Slack app
+## Step 4 — Connect your cluster to the project
 
-You need a Slack app installed into your workspace. The app acts as the bot that users mention and that posts replies on behalf of the agent.
+Before you can deploy, you need to link your Camunda cluster to the Web Modeler project.
 
-In the coming steps you'll be asked to create secrets - No need to do it now, but you will be told to add secrets to Camunda as you go through these steps. Here is how to get to the Secrets page — you will need it several times:
+1. Click the **back arrow** to return to the project view (the list of files in your project).
+2. In the left sidebar, click **Connected clusters**.
+3. In the dropdown, select the cluster you want to deploy to.
 
-> **How to add a secret:** Log in to [Camunda Console](https://console.camunda.io) → click your cluster name → click the **Secrets** tab → click **Create new secret** → enter the name and value → click **Create**.
+The cluster is now set as the deployment target for every BPMN in this project.
 
-### 4a. Create the app
+---
 
-1. Go to [api.slack.com/apps](https://api.slack.com/apps) and sign in with your Slack account.
+## Step 5 — Deploy the process
+
+Deploy now — before creating the Slack app — so that Camunda generates the inbound webhook URL you will need in the next step.
+
+1. Open `camunda-slack-agent-template.bpmn` in Web Modeler.
+2. Click **Deploy** in the top-right corner and confirm.
+
+> **Expected warnings:** You will see warnings about secrets that do not exist yet (`SLACK_…`, `AWS_…`). This is normal — the secrets will be added in the following steps. The deployment will still succeed.
+
+### Find and copy the webhook URL
+
+Once deployed, retrieve the webhook URL that Slack will use to send events to Camunda.
+
+1. Click the **"Info From Slack"** start event.
+2. In the properties panel, open the **Webhook** tab.
+3. Copy the full URL — it will look like:
+   ```
+   https://<region>-<cluster-id>.connectors.camunda.io/inbound/<your-webhook-UUID>
+   ```
+
+Keep this URL handy — you will paste it into the Slack app manifest in the next step.
+
+---
+
+## Step 6 — Create your Slack app from the manifest
+
+This repo includes a `slack-app-manifest.json` file that configures the app name, bot scopes, and event subscriptions automatically. You just need to fill in two placeholders before creating the app.
+
+### 6a. Fill in the manifest placeholders
+
+The manifest is reproduced below. Replace the two placeholders before moving on:
+
+| Placeholder | Replace with |
+|-------------|-------------|
+| `[NAME_OF_YOUR_APP]` *(appears twice)* | Your chosen bot name, e.g. `My Camunda Agent` |
+| `[YOUR_REQUEST_URL]` | The webhook URL you copied in Step 5 |
+
+```json
+{
+    "display_information": {
+        "name": "[NAME_OF_YOUR_APP]"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "[NAME_OF_YOUR_APP]",
+            "always_online": false
+        }
+    },
+    "oauth_config": {
+        "scopes": {
+            "bot": [
+                "app_mentions:read",
+                "chat:write",
+                "channels:history"
+            ]
+        },
+        "pkce_enabled": false
+    },
+    "settings": {
+        "event_subscriptions": {
+            "request_url": "[YOUR_REQUEST_URL]",
+            "bot_events": [
+                "app_mention",
+                "message.channels"
+            ]
+        },
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false,
+        "is_mcp_enabled": false
+    }
+}
+```
+
+### 6b. Create the app
+
+1. Go to [api.slack.com/apps](https://api.slack.com/apps) and sign in.
 2. Click **Create New App**.
-3. Select **From scratch**.
-4. Enter an app name (e.g. *My Camunda Agent*) and select the workspace to install it into.
-5. Click **Create App**.
+3. Select **From an app manifest**.
+4. Select your workspace and click **Next**.
+5. Choose the **JSON** tab, delete the placeholder content, and paste the updated manifest JSON from above.
+6. Click **Next**, review the summary of permissions and events, then click **Create**.
 
-### 4b. Add Bot Token Scopes
+### 6c. Copy the Signing Secret and add it to Camunda
 
-1. In the left sidebar click **OAuth & Permissions**.
-2. Scroll down to **Scopes → Bot Token Scopes**.
-3. Click **Add an OAuth Scope** and add the following:
+1. On the **Basic Information** page, scroll to **App Credentials**.
+2. Click **Show** next to **Signing Secret** and copy it.
 
-| Scope | Required? | Why it is needed |
-|-------|-----------|-----------------|
-| `app_mentions:read` | Yes | Allows Slack to deliver `@mention` events to Camunda so the process starts. |
-| `chat:write` | Yes | Allows the agent to post messages back into the Slack thread. |
-| `channels:history` | Yes | Allows the inbound connector to receive threaded replies in public channels. |
-
-
-### 4c. Install the app and add the Bot Token to Camunda
-
-1. Scroll back to the top of the **OAuth & Permissions** page.
-2. Click **Install to Workspace** and approve the permissions.
-3. After installing, the page shows a **Bot User OAuth Token** starting with `xoxb-`. Copy it.
-
-> **Add to your Camunda cluster now** — Console → your cluster → Secrets → Create new secret:
-> - **Name:** `SLACK_[YOURNAME]_OATH_TOKEN`
-> - **Value:** the `xoxb-…` token you just copied
-
-### 4d. Copy the Signing Secret and add it to Camunda
-
-1. In the left sidebar click **Basic Information**.
-2. Scroll to **App Credentials**.
-3. Copy the **Signing Secret**.
-
-> **Add to your Camunda cluster now** — Console → your cluster → Secrets → Create new secret:
+> **Add to your Camunda cluster now** — Log in to [Camunda Console](https://console.camunda.io) → your cluster → **Secrets** tab → **Create new secret**:
 > - **Name:** `SLACK_[YOURNAME]_SIGINING_SECRET`
 > - **Value:** the Signing Secret you just copied
 
+### 6d. Install the app and copy the Bot Token
+
+1. In the left sidebar click **OAuth & Permissions**.
+2. Click **Install to Workspace** and approve the permissions.
+3. After installing, the page shows a **Bot User OAuth Token** starting with `xoxb-`. Copy it.
+
+> **Add to your Camunda cluster now** — Console → your cluster → **Secrets** → **Create new secret**:
+> - **Name:** `SLACK_[YOURNAME]_OATH_TOKEN`
+> - **Value:** the `xoxb-…` token you just copied
+
 ---
 
-## Step 5 — Configure AWS credentials *(skip if on a Camunda dev cluster)*
+## Step 7 — Configure AWS credentials *(skip if on a Camunda dev cluster)*
 
-> **Using a Camunda-provided development cluster?** Dev clusters often come with Bedrock model access pre-configured at the cluster level. Try deploying and running the agent first — if it fails to invoke the model, come back here and add the AWS secrets manually.
+> **Using a Camunda-provided development cluster?** Dev clusters often come with Bedrock model access pre-configured at the cluster level. Try running the agent first — if it fails to invoke the model, come back here and add the AWS secrets manually.
 
 If you are using your own cluster or the agent cannot reach Bedrock, you need an IAM user or role with `bedrock:InvokeModel` permission on `us.anthropic.claude-sonnet-4-6`. See the AWS guide [Creating IAM users](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) if you need to create one (choose **Application running outside AWS** as the use case).
-
-Once you have your credentials:
 
 > **Add to your Camunda cluster** — Console → your cluster → Secrets → Create new secret. Create all three:
 > - **Name:** `AWS_REGION` — **Value:** your Bedrock-enabled region, e.g. `us-east-1`
 > - **Name:** `AWS_ACCESS_KEY` — **Value:** the IAM access key id
 > - **Name:** `AWS_SECRET_KEY` — **Value:** the IAM secret access key
-
----
-
-## Step 6 — Deploy the BPMN
-
-
-Now that the secret placeholders are updated and all secrets exist in the cluster, you are ready to deploy.
-
-1. Open `camunda-slack-agent-template.bpmn` in Web Modeler.
-2. Click **Deploy** in the top-right corner.
-3. Select your cluster and click **Deploy**.
-
----
-
-## Step 7 — Connect Slack Event Subscriptions
-
-Now that the process is deployed, Camunda has created the inbound webhook endpoint. You need to give Slack this URL so it knows where to send events.
-
-### 7a. Find the webhook URL
-
-The URL has the format:
-
-```
-https://<region>-<cluster-id>.connectors.camunda.io/inbound/<your-webhook-UUID>
-```
-
-where `<your-webhook-UUID>` is the UUID you set in Step 2c.
-
-To find the exact URL:
-
-1. Open the deployed BPMN in Web Modeler.
-2. Click the **Info From Slack** start event.
-3. In the properties panel, open the **Webhook** tab — the full URL is shown there. Copy it.
-
-### 7b. Enable Event Subscriptions in Slack
-
-1. Return to your app at [api.slack.com/apps](https://api.slack.com/apps).
-2. In the left sidebar click **Event Subscriptions**.
-3. Toggle **Enable Events** on.
-4. Paste the webhook URL into the **Request URL** field.
-   Slack immediately sends a `url_verification` challenge — the BPMN responds to it automatically, so the URL should show a green **Verified** tick within a few seconds.
-5. Under **Subscribe to bot events**, click **Add Bot User Event** and add:
-
-| Event | Required? | Why it is needed |
-|-------|-----------|-----------------|
-| `app_mention` | Yes | Fires the process start event when a user `@mentions` the bot. |
-| `message.channels` | Yes | Delivers threaded replies to the intermediate catch event in public channels. |
-
-
-6. Click **Save Changes** at the bottom.
-7. Slack will prompt you to **reinstall the app** to apply the new scopes — click the link and approve again.
 
 ---
 
@@ -309,3 +309,4 @@ Add a new start event for the inbound side (e.g. a Microsoft Teams or email inbo
 | File | Purpose |
 |------|---------|
 | `camunda-slack-agent-template.bpmn` | The main process definition — AI agent, Slack connectors, timer events, and conversation flow. |
+| `slack-app-manifest.json` | Slack app manifest — fill in the two placeholders and use it to create your Slack app in one step. |
