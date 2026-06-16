@@ -83,7 +83,7 @@ If two people deploy this template to the same cluster with the default ID `Camu
 
 The **"Info From Slack"** start event and the **"Wait for Reply in Thread"** intermediate catch event each need their own unique message name. The two names must be **different** from each other.
 
-1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and generate two UUIDs.
+1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and generate two UUIDs. 🤖 Camunda employees can ask the Camunda Slack bot to generate UUIDs instead.
 2. Click the **"Info From Slack"** start event and paste the first UUID into its **Message Name** field.
 3. Click the **"Wait for Reply in Thread"** intermediate catch event and paste the second UUID into its **Message Name** field.
 
@@ -91,7 +91,7 @@ The **"Info From Slack"** start event and the **"Wait for Reply in Thread"** int
 
 The Webhook ID becomes the last segment of the Camunda inbound webhook URL that Slack will send events to. Both events must share the **same** Webhook ID — this is what allows Slack replies to be routed to the correct process instance.
 
-1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and copy a UUID.
+1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and copy a UUID. 🤖 Camunda employees can ask the Camunda Slack bot to generate a UUID instead.
 2. Click the **"Info From Slack"** start event and paste the UUID into its **Webhook ID** field.
 3. Click the **"Wait for Reply in Thread"** intermediate catch event and paste the **same UUID** into its **Webhook ID** field.
 
@@ -136,8 +136,9 @@ Deploy now — before creating the Slack app — so that Camunda generates the i
 
 ### Find and copy the webhook URL
 
-Once deployed, retrieve the webhook URL that Slack will use to send events to Camunda. 
-Note that Camundi using the helper agent can just ask for the WebhookURL to be generated for them.
+Once deployed, retrieve the webhook URL that Slack will use to send events to Camunda.
+
+🤖 Camunda employees: ask the Camunda Slack bot to get this webhook URL for you.
 
 1. Click the **"Info From Slack"** start event.
 2. In the properties panel, open the **Webhook** tab.
@@ -217,6 +218,8 @@ The manifest is reproduced below. Replace the two placeholders before moving on:
 > **Add to your Camunda cluster now** — Log in to [Camunda Console](https://console.camunda.io) → your cluster → **Secrets** tab → **Create new secret**:
 > - **Name:** `SLACK_[YOURNAME]_SIGINING_SECRET`
 > - **Value:** the Signing Secret you just copied
+>
+> 🤖 Camunda employees: ask the Camunda Slack bot to create this secret in the cluster for you.
 
 ### 6d. Install the app and copy the Bot Token
 
@@ -227,6 +230,8 @@ The manifest is reproduced below. Replace the two placeholders before moving on:
 > **Add to your Camunda cluster now** — Console → your cluster → **Secrets** → **Create new secret**:
 > - **Name:** `SLACK_[YOURNAME]_OATH_TOKEN`
 > - **Value:** the `xoxb-…` token you just copied
+>
+> 🤖 Camunda employees: ask the Camunda Slack bot to create this secret in the cluster for you.
 
 ---
 
@@ -240,6 +245,8 @@ If you are using your own cluster or the agent cannot reach Bedrock, you need an
 > - **Name:** `AWS_REGION` — **Value:** your Bedrock-enabled region, e.g. `us-east-1`
 > - **Name:** `AWS_ACCESS_KEY` — **Value:** the IAM access key id
 > - **Name:** `AWS_SECRET_KEY` — **Value:** the IAM secret access key
+>
+> 🤖 Camunda employees: ask the Camunda Slack bot to create these secrets in the cluster for you.
 
 ---
 
