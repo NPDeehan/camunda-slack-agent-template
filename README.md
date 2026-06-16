@@ -106,8 +106,8 @@ Choose your identifier now (e.g. `ALICE`, `MYTEAM`, `JOHN`) and use it consisten
 | Element | Field | Secret reference |
 |---------|-------|-----------------|
 | **"Show Answer in Slack"** service task (inside the agent sub-process) | Token | `{{secrets.SLACK_HAWK_OATH_TOKEN}}` |
-| **"Info From Slack"** start event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
-| **"Response"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGINING_SECRET}}` |
+| **"Info From Slack"** start event | Signing Secret | `{{secrets.SLACK_HAWK_SIGNING_SECRET}}` |
+| **"Response"** intermediate catch event | Signing Secret | `{{secrets.SLACK_HAWK_SIGNING_SECRET}}` |
 
 > **Tip:** Download the BPMN, do a find-and-replace of `HAWK` in any text editor, then re-upload to your project. All occurrences will be updated at once.
 
@@ -216,7 +216,7 @@ The manifest is reproduced below. Replace the two placeholders before moving on:
 2. Click **Show** next to **Signing Secret** and copy it.
 
 > **Add to your Camunda cluster now** — Log in to [Camunda Console](https://console.camunda.io) → your cluster → **Secrets** tab → **Create new secret**:
-> - **Name:** `SLACK_[YOURNAME]_SIGINING_SECRET`
+> - **Name:** `SLACK_[YOURNAME]_SIGNING_SECRET`
 > - **Value:** the Signing Secret you just copied
 >
 > 🤖 Camunda employees: ask the Camunda Slack bot to create this secret in the cluster for you.
@@ -252,6 +252,8 @@ If you are using your own cluster or the agent cannot reach Bedrock, you need an
 ---
 
 ## Step 8 — Test it
+
+Before testing, re-deploy the process to pick up all the configuration changes made since Step 5. Open `camunda-slack-agent-template.bpmn` in Web Modeler, click the arrow beside **Deploy & Run** dropdown in the top-right corner, and select **Deploy**.
 
 ### Slack
 

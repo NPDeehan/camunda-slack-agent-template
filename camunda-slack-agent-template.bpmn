@@ -86,7 +86,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           <zeebe:properties>
             <zeebe:property name="inbound.type" value="io.camunda:slack-webhook:1" />
             <zeebe:property name="inbound.context" value="{{secrets.SLACK_HAWK_WEBHOOK_ID}}" />
-            <zeebe:property name="inbound.slackSigningSecret" value="{{secrets.SLACK_HAWK_SIGINING_SECRET}}" />
+            <zeebe:property name="inbound.slackSigningSecret" value="{{secrets.SLACK_HAWK_SIGNING_SECRET}}" />
             <zeebe:property name="inbound.verificationExpression" value="=if (body.type != null and body.type = &#34;url_verification&#34;) then {body:{&#34;challenge&#34;:body.challenge}, statusCode: 200} else null" />
             <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;message&#34;&#10; and request.body.event.thread_ts != null&#10; and request.body.event.client_msg_id != null&#10; and request.body.event.bot_id = null" />
             <zeebe:property name="consumeUnmatchedEvents" value="false" />
@@ -173,7 +173,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
         <zeebe:properties>
           <zeebe:property name="inbound.type" value="io.camunda:slack-webhook:1" />
           <zeebe:property name="inbound.context" value="{{secrets.SLACK_HAWK_WEBHOOK_ID}}" />
-          <zeebe:property name="inbound.slackSigningSecret" value="{{secrets.SLACK_HAWK_SIGINING_SECRET}}" />
+          <zeebe:property name="inbound.slackSigningSecret" value="{{secrets.SLACK_HAWK_SIGNING_SECRET}}" />
           <zeebe:property name="inbound.verificationExpression" value="=if (body.type != null and body.type = &#34;url_verification&#34;) then {body:{&#34;challenge&#34;:body.challenge}, statusCode: 200} else null" />
           <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;app_mention&#34;&#10;and not(is defined(request.headers.x-slack-retry-num))&#10;" />
           <zeebe:property name="consumeUnmatchedEvents" value="false" />
