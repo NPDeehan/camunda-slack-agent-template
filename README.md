@@ -73,7 +73,7 @@ Once the BPMN is loaded, make these three changes in Web Modeler before doing an
 
 ### 2a. Set a unique Process Name and ID
 
-1. Click on an empty area in the canvas (not on any element) to select the process itself. Make sure you're on the implement tab at the top, not the design tab
+1. Click on an empty area in the canvas (not on any element) to select the process itself. Make sure you're on the implement tab at the top, there are three tabs, Design, Implement and Play. Users can stay in Implement.
 2. In the properties panel (named 'Details'), update **Name** to something descriptive and unique, e.g. `Alice Slack Agent`.
 3. Update **ID** to a unique identifier using only letters, numbers, and hyphens, e.g. `alice-slack-agent`.
 
@@ -81,7 +81,7 @@ If two people deploy this template to the same cluster with the default ID `Camu
 
 ### 2b. Set Message Names
 
-The **"Info From Slack"** start event and the **"Wait for Reply in Thread"** intermediate catch event each need their own unique message name. The two names must be **different** from each other.
+The **"Info From Slack"** start event and the **"Wait for Reply in Thread"** intermediate catch event each need their own unique message name. The two names must be **different** from each other. The message names field is located in the `Correcation`section of the properties panel. visible after the element is selected.  
 
 1. Go to [uuidgenerator.net](https://www.uuidgenerator.net/) and generate two UUIDs. 🤖 Camunda employees can ask the Camunda Slack bot to generate UUIDs instead.
 2. Click the **"Info From Slack"** start event and paste the first UUID into its **Message Name** field.
