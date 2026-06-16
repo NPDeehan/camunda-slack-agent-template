@@ -235,7 +235,8 @@ The manifest is reproduced below. Replace the two placeholders before moving on:
 
 ---
 
-## Step 7 — Configure AWS credentials *(skip if on a Camundi have alrady been given access to the demo cluster)*
+## Step 7 — Configure AWS credentials *(skip if on a Camundi have already been given access to the demo cluster)*
+ 🤖 Not needed to be done if you're using the Camunda Bot. It's ready setup beforehand. 
 
 > **Using a Camunda-provided development cluster?** Dev clusters often come with Bedrock model access pre-configured at the cluster level. Try running the agent first — if it fails to invoke the model, come back here and add the AWS secrets manually.
 
