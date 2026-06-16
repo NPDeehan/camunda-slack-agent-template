@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.44.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.47.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
   <bpmn:process id="Camunda-Slack-Agent-Template" name="Camunda-Slack-Agent-Template" isExecutable="true">
     <bpmn:sequenceFlow id="Flow_0jt0w1f" sourceRef="Activity_1jbvj8d" targetRef="Event_14an6hl" />
     <bpmn:endEvent id="Event_14an6hl" name="Slack Agent Finished">
@@ -175,7 +175,7 @@ Keep messages concise. Slack is a conversational medium, not a document. Prefer 
           <zeebe:property name="inbound.context" value="{{secrets.SLACK_HAWK_WEBHOOK_ID}}" />
           <zeebe:property name="inbound.slackSigningSecret" value="{{secrets.SLACK_HAWK_SIGNING_SECRET}}" />
           <zeebe:property name="inbound.verificationExpression" value="=if (body.type != null and body.type = &#34;url_verification&#34;) then {body:{&#34;challenge&#34;:body.challenge}, statusCode: 200} else null" />
-          <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;app_mention&#34;&#10;and not(is defined(request.headers.x-slack-retry-num))&#10;" />
+          <zeebe:property name="activationCondition" value="=request.body.event.type = &#34;app_mention&#34;&#10;and not(is defined(request.headers.x-slack-retry-num))&#10;and not(is defined(request.body.event.thread_ts))" />
           <zeebe:property name="consumeUnmatchedEvents" value="false" />
           <zeebe:property name="correlationRequired" value="notRequired" />
           <zeebe:property name="deduplicationModeManualFlag" value="false" />
